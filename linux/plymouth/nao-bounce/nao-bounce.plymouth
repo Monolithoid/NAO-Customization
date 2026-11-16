@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=NAO Bounce
+Description=Mascotte NAO rebondissante (prototype)
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/nao-bounce
+ScriptFile=/usr/share/plymouth/themes/nao-bounce/nao-bounce.script
