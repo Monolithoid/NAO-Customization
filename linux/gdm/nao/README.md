@@ -7,6 +7,27 @@ from target-machine logs. New CLI installations are disabled until the regressio
 has been diagnosed and the theme has been tested in an actual Ubuntu 26.04 /
 GNOME Shell 50.1 GDM session.
 
+## Identified profile handling defect
+
+Inspection of Ubuntu's gdm3 50.1 package revealed that its vendor profile at
+`/usr/share/dconf/profile/gdm` contains:
+
+```text
+user-db:user
+file-db:/var/lib/gdm3/greeter-dconf-defaults
+```
+
+When `/etc/dconf/profile/gdm` was absent, the first installer created an override
+with `user-db:user` and `system-db:gdm`, masking the vendor profile and omitting
+the compiled greeter defaults. That is a confirmed defect in the installer and a
+probable explanation for the reported session changes, conditional on the target
+machine having used the vendor profile. The exact runtime failure has not been
+reproduced. Forcing the user list was another unnecessary configuration change.
+
+The [background-only variant](../nao-background/README.md) uses Ubuntu's native
+background keys and existing configuration generator, preserving the profile.
+The full-theme installation remains disabled.
+
 ## Restore the previous configuration first
 
 From the repository root:
