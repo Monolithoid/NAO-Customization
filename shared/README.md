@@ -1,5 +1,4 @@
-# Ressources communes
+# Shared resources
 
-Réserver ce dossier aux images, palettes et autres ressources utilisées par
-plusieurs projets. Documenter leur origine et leur licence avant d'ajouter des
-ressources tierces.
+Reserve this directory for images, palettes, and other resources used by multiple
+projects. Document the source and license before adding third-party resources.

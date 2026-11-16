@@ -1,29 +1,29 @@
 # NAO Customization
 
-Petites personnalisations pour mes environnements Linux, Windows et autres.
-Chaque personnalisation reste autonome : ses fichiers, ses prérequis et ses
-instructions sont regroupés dans son dossier.
+Small customizations for my Linux, Windows, and other environments.
+Each customization is self-contained: its files, prerequisites, and instructions
+live in its own directory.
 
-## Arborescence
+## Project structure
 
 ```text
 linux/
   plymouth/
-    nao-bounce/    # Prototype : NAO rebondit pendant le démarrage
-windows/          # Futures personnalisations Windows
-shared/           # Ressources communes aux différents systèmes
+    nao-bounce/    # Prototype: NAO bounces during boot
+windows/          # Future Windows customizations
+shared/           # Resources shared across systems
 ```
 
-## Premier projet
+## First project
 
-[NAO Bounce](linux/plymouth/nao-bounce/README.md) est un thème Plymouth de départ.
-Il utilise une mascotte robot provisoire, à remplacer par le vrai visuel de NAO.
+[NAO Bounce](linux/plymouth/nao-bounce/README.md) is a starter Plymouth theme.
+It uses a placeholder robot mascot that can be replaced with the actual NAO artwork.
 
-## Ajouter une personnalisation
+## Adding a customization
 
-Créer un dossier sous le système concerné, par exemple `linux/terminal/mon-theme`
-ou `windows/terminal/mon-theme`. Ajouter un README décrivant le résultat attendu,
-les prérequis, l'installation, la vérification et la désinstallation. Placer les
-ressources propres au projet dans son dossier `assets/` ; réserver `shared/` aux
-ressources réellement communes. Ne pas versionner de secrets ou de configurations
-personnelles contenant des identifiants.
+Create a directory under the relevant system, such as `linux/terminal/my-theme`
+or `windows/terminal/my-theme`. Add a README describing the intended result,
+prerequisites, installation, verification, and uninstallation. Keep project-specific
+resources in its `assets/` directory; reserve `shared/` for resources used by
+multiple projects. Do not commit secrets or personal configuration containing
+credentials.

@@ -1,6 +1,6 @@
 [Plymouth Theme]
 Name=NAO Bounce
-Description=Mascotte NAO rebondissante (prototype)
+Description=Bouncing NAO mascot (prototype)
 ModuleName=script
 
 [script]

@@ -1,62 +1,62 @@
-# NAO Bounce — prototype Plymouth
+# NAO Bounce — Plymouth prototype
 
-Une mascotte robot rebondit au centre d'un fond bleu sombre pendant le démarrage.
-Le PNG fourni est un dessin provisoire créé pour ce dépôt, pas un visuel officiel
-de NAO. Remplacer `assets/nao.png` par un PNG transparent de dimensions similaires
-(192 × 192) pour personnaliser le personnage. Le mouvement se règle dans
-`nao-bounce.script` : amplitude `45`, vitesse `3`.
+A robot mascot bounces in the center of a dark blue background during boot.
+The included PNG is placeholder artwork created for this repository, not official
+NAO artwork. Replace `assets/nao.png` with a transparent PNG of similar dimensions
+(192 × 192) to customize the character. Adjust the motion in `nao-bounce.script`:
+amplitude `45`, speed `3`.
 
-## Prérequis
+## Prerequisites
 
-Une machine Linux utilisant Plymouth avec son module `script`. Le paquet et les
-outils de sélection du thème dépendent de la distribution. Aucun secret ni service
-externe n'est nécessaire. Ce thème ne concerne pas Windows.
+A Linux machine running Plymouth with its `script` plugin. Package names and theme
+selection tools depend on the distribution. No secrets or external services are
+required. This theme is for Linux only.
 
-## Installation manuelle
+## Manual installation
 
-Depuis ce dossier, sur une machine de test avec Plymouth installé :
+From this directory, on a test machine with Plymouth installed:
 
 ```sh
 sudo install -d /usr/share/plymouth/themes/nao-bounce
 sudo install -m 644 nao-bounce.plymouth nao-bounce.script assets/nao.png /usr/share/plymouth/themes/nao-bounce/
 ```
 
-La sélection du thème et la reconstruction de l'initramfs sont spécifiques à la
-distribution. Noter le thème actuel avant toute modification.
+Theme selection and initramfs rebuilding are distribution-specific. Record the
+current theme before making any changes.
 
-Sur les distributions proposant `plymouth-set-default-theme` :
+On distributions providing `plymouth-set-default-theme`:
 
 ```sh
-plymouth-set-default-theme                 # noter la valeur pour la restauration
+plymouth-set-default-theme                 # Record this value for restoration
 sudo plymouth-set-default-theme -R nao-bounce
 ```
 
-Sur Debian/Ubuntu utilisant les alternatives :
+On Debian/Ubuntu systems using alternatives:
 
 ```sh
-update-alternatives --display default.plymouth   # noter la cible actuelle
+update-alternatives --display default.plymouth   # Record the current target
 sudo update-alternatives --install /usr/share/plymouth/themes/default.plymouth default.plymouth /usr/share/plymouth/themes/nao-bounce/nao-bounce.plymouth 100
 sudo update-alternatives --config default.plymouth
 sudo update-initramfs -u
 ```
 
-## Vérification
+## Verification
 
-Vérifier le rendu sur une VM avec console graphique avant d'utiliser ce prototype
-sur sa machine principale. Contrôler l'animation, les messages et, si applicable,
-la saisie du mot de passe de déchiffrement. Plymouth dépend de la console et du
-matériel graphique : servir les fichiers dans un navigateur ne teste pas le thème.
-Le rendu et ces interactions n'ont pas encore été validés dans Plymouth.
+Check the rendering in a VM with a graphical console before using this prototype
+on your main machine. Check the animation, messages, and, where applicable, disk
+unlock password entry. Plymouth depends on the console and graphics hardware:
+serving these files in a browser does not test the theme.
+Rendering and these interactions have not yet been validated in Plymouth.
 
-## Désinstallation
+## Uninstallation
 
-Rétablir le thème précédent et reconstruire l'initramfs avec la méthode de votre
-distribution. Avec les alternatives, sélectionner d'abord l'ancienne cible puis
-retirer l'inscription :
+Restore the previous theme and rebuild the initramfs using your distribution's
+method. With alternatives, select the previous target first, then remove this
+theme's registration:
 
 ```sh
 sudo update-alternatives --remove default.plymouth /usr/share/plymouth/themes/nao-bounce/nao-bounce.plymouth
 sudo update-initramfs -u
 ```
 
-Après restauration, supprimer uniquement le dossier installé `nao-bounce`.
+After restoring the previous theme, remove only the installed `nao-bounce` directory.

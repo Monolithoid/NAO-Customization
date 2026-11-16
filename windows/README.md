@@ -1,4 +1,4 @@
 # Windows
 
-Emplacement des futures personnalisations Windows : terminal, thèmes, scripts, etc.
-Chaque projet aura son propre dossier et ses instructions.
+Home for future Windows customizations: terminal settings, themes, scripts, etc.
+Each project will have its own directory and instructions.
