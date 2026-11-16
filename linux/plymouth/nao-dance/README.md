@@ -5,6 +5,10 @@ with the background removed frame by frame. The `nao-dance` Plymouth theme
 plays this sequence on a dark blue background. The existing `nao-bounce`
 prototype is unchanged.
 
+Plymouth displays the frames at twice their source size (600 × 720), centered
+on screen. Scaling happens once during preloading; the source assets and
+animation speed are unchanged.
+
 ## Assets
 
 - `assets/frames/frame-01.png` through `frame-20.png`: RGBA image sequence,

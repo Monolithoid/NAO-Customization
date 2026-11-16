@@ -7,7 +7,8 @@ for (i = 0; i < 20; i++) {
     number = i + 1;
     if (number < 10) name = "frames/frame-0" + number + ".png";
     else name = "frames/frame-" + number + ".png";
-    frames[i] = Image(name);
+    frame = Image(name);
+    frames[i] = frame.Scale(frame.GetWidth() * 2, frame.GetHeight() * 2);
 }
 mascot.image = frames[0];
 mascot.sprite = Sprite(mascot.image);
