@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=NAO Dance
+Description=Transparent NAO arm-wave animation
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/nao-dance
+ScriptFile=/usr/share/plymouth/themes/nao-dance/nao-dance.script
