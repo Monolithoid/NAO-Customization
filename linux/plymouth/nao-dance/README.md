@@ -1,8 +1,9 @@
 # NAO dance — transparent arm-wave loop
 
 A compact arm-wave cycle extracted from the user-provided `nao-dance.mp4`,
-with the background removed frame by frame. This is an animation asset for a
-future Plymouth theme; the existing `nao-bounce` prototype is unchanged.
+with the background removed frame by frame. The `nao-dance` Plymouth theme
+plays this sequence on a dark blue background. The existing `nao-bounce`
+prototype is unchanged.
 
 ## Assets
 
@@ -57,7 +58,73 @@ ffmpeg -framerate 30 -i assets/frames/frame-%02d.png \
   -loop 0 -gifflags -offsetting assets/nao-wave.gif
 ```
 
-## Validation and next step
+## Install the theme
+
+On Linux, clone the repository and check out the branch containing this theme:
+
+```sh
+git clone --branch feat/customization-project-structure https://github.com/Monolithoid/NAO-Customization.git
+cd NAO-Customization/linux/plymouth/nao-dance
+```
+
+For an existing checkout, switch to that branch and pull instead of cloning again.
+Install Plymouth and its script plugin using your distribution's packages. On
+Debian/Ubuntu, these are `plymouth` and `plymouth-themes`:
+
+```sh
+sudo apt install plymouth plymouth-themes
+sudo install -d /usr/share/plymouth/themes/nao-dance/frames
+sudo install -m 644 nao-dance.plymouth nao-dance.script /usr/share/plymouth/themes/nao-dance/
+sudo install -m 644 assets/frames/frame-*.png /usr/share/plymouth/themes/nao-dance/frames/
+```
+
+The `install` commands also apply to other distributions; only the package
+installation and theme selection commands differ. No Python packages, models,
+MP4 files, or GIF files are needed on the target machine.
+
+### Debian/Ubuntu with alternatives
+
+Record the previous target before selecting the theme:
+
+```sh
+update-alternatives --display default.plymouth
+sudo update-alternatives --install /usr/share/plymouth/themes/default.plymouth default.plymouth /usr/share/plymouth/themes/nao-dance/nao-dance.plymouth 100
+sudo update-alternatives --config default.plymouth
+sudo update-initramfs -u
+```
+
+Select `nao-dance` in the interactive menu. If your distribution does not provide
+this alternative, use its documented Plymouth theme selection mechanism instead.
+
+### Distributions with plymouth-set-default-theme
+
+Record the previous theme, then select and rebuild:
+
+```sh
+plymouth-set-default-theme
+sudo plymouth-set-default-theme -R nao-dance
+```
+
+The boot command line must enable the graphical splash (commonly `quiet splash`
+on Ubuntu). If the theme does not appear, check your distribution's bootloader
+configuration and Plymouth setup rather than copying unrelated GRUB commands.
+
+### Restore the previous theme
+
+With alternatives, select the recorded previous target, remove the NAO entry,
+and rebuild:
+
+```sh
+sudo update-alternatives --config default.plymouth
+sudo update-alternatives --remove default.plymouth /usr/share/plymouth/themes/nao-dance/nao-dance.plymouth
+sudo update-initramfs -u
+```
+
+With `plymouth-set-default-theme`, run `sudo plymouth-set-default-theme -R PREVIOUS_THEME`,
+substituting the recorded name. Remove the installed `nao-dance` directory only
+after restoring the previous theme.
+
+## Validation and limitations
 
 The reference has 20 video frames at 30 fps, a 0.667-second duration and no audio.
 The transparent sequence is checked for frame count, dimensions, and alpha;
@@ -65,9 +132,11 @@ its frames are reviewed against a dark background to check the silhouette.
 Automatic segmentation may leave minor edge artifacts, especially around fingers
 and moving arms. This low-resolution video is not a studio-quality cutout.
 
-Plymouth's script plugin needs an image sequence rather than MP4/GIF playback.
-The PNG sequence is ready for integration; theme integration and runtime
-validation in Plymouth remain pending.
+The theme preloads the PNG sequence and preserves message and password prompt
+callbacks. Playback timing assumes Plymouth's approximately 50 Hz refresh rate.
+Plymouth is unavailable in the cloud environment: the actual rendering, timing,
+and interactive prompts remain untested. Validate in a VM with a graphical console
+before deploying to your main machine, particularly with encrypted disks.
 
 The footage was supplied by the user from the linked video. No ownership or
 redistribution license is asserted here; the source video's terms still apply.
