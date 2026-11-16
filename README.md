@@ -8,6 +8,7 @@ live in its own directory.
 
 ```text
 linux/
+  gdm/nao/        # Static login-screen design (installation pending)
   plymouth/
     nao-bounce/    # Prototype: NAO bounces during boot
     nao-dance/     # Transparent arm-wave animation and preview
