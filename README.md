@@ -9,7 +9,7 @@ live in its own directory.
 ```text
 linux/
   gdm/
-    nao-background/ # Background only, using native Ubuntu settings
+    nao-background/ # Native Ubuntu background and optional colors
     nao/            # Full login theme (installation suspended)
   plymouth/
     nao-bounce/    # Prototype: NAO bounces during boot
@@ -29,7 +29,8 @@ with a transparent arm-wave image sequence and looping previews.
 ## Login screen
 
 [NAO background](linux/gdm/nao-background/README.md) changes only the wallpaper
-using Ubuntu's native login-screen settings.
+using Ubuntu's native login-screen settings, with an optional dark preference
+and blue accent.
 
 [NAO GDM](linux/gdm/nao/README.md) contains the earlier full login-screen design.
 Installation is suspended following a reported GDM regression; use its recovery

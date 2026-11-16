@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Set only Ubuntu's native GDM background settings; preserve the greeter profile."""
+"""Configure native Ubuntu GDM background or colors; preserve the greeter profile."""
 import argparse
 import hashlib
 import json
@@ -17,6 +17,9 @@ DROPIN = SOURCE_DIR / '99-nao-background'
 ASSET = Path('/usr/local/share/nao-gdm-background/nao-background.svg')
 STATE = Path('/var/lib/nao-gdm-background')
 OLD_STATE = Path('/var/lib/nao-gdm')
+COLOR_DROPIN = SOURCE_DIR / '99-nao-colors'
+COLOR_STATE = Path('/var/lib/nao-gdm-colors')
+COLORS = b"[org/gnome/desktop/interface]\ncolor-scheme='prefer-dark'\naccent-color='blue'\n"
 
 
 def run(*args):
@@ -100,14 +103,59 @@ def restore():
     print('NAO background override removed; previous GDM defaults regenerated. GDM was not restarted.')
 
 
+def install_colors():
+    check()
+    # Validate the chosen native values, not just the presence of the keys.
+    for key, value in [('color-scheme', 'prefer-dark'), ('accent-color', 'blue')]:
+        values = run('gsettings', 'range', 'org.gnome.desktop.interface', key).decode()
+        if f"'{value}'" not in values.splitlines():
+            raise ValueError(f'Native {key} does not support {value}; no changes made')
+    if any(p.exists() or p.is_symlink() for p in (COLOR_STATE, COLOR_DROPIN)):
+        raise ValueError('NAO colors already exist. Use --restore-colors before reinstalling.')
+    COLOR_STATE.mkdir(mode=0o700, parents=True)
+    write(COLOR_STATE / 'files.json', json.dumps([
+        {'path': str(COLOR_DROPIN), 'sha256': digest(COLORS)}
+    ]).encode(), 0o600)
+    try:
+        write(COLOR_DROPIN, COLORS)
+        run(str(GENERATOR))
+    except BaseException:
+        COLOR_DROPIN.unlink(missing_ok=True)
+        run(str(GENERATOR))
+        shutil.rmtree(COLOR_STATE)
+        raise
+    print('Native dark preference and blue accent configured for the GDM greeter.')
+    print('Save your work, then log out to inspect. The background was not changed.')
+
+
+def restore_colors():
+    records = json.loads((COLOR_STATE / 'files.json').read_text())
+    if len(records) != 1 or records[0]['path'] != str(COLOR_DROPIN):
+        raise ValueError('Unexpected color recovery record; no files removed')
+    if COLOR_DROPIN.is_symlink() or (COLOR_DROPIN.exists() and
+            digest(COLOR_DROPIN.read_bytes()) != records[0]['sha256']):
+        raise ValueError(f'{COLOR_DROPIN} changed after installation; recovery state retained')
+    COLOR_DROPIN.unlink(missing_ok=True)
+    run(str(GENERATOR))
+    shutil.rmtree(COLOR_STATE)
+    print('NAO color override removed. Existing background configuration was preserved.')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--restore', action='store_true')
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument('--restore', action='store_true', help='Restore only the background')
+    mode.add_argument('--colors', action='store_true', help='Use native dark preference and blue accent')
+    mode.add_argument('--restore-colors', action='store_true', help='Restore only the colors')
     args = parser.parse_args()
     try:
         if os.geteuid() != 0:
             raise ValueError('Run with sudo')
-        if args.restore:
+        if args.colors:
+            install_colors()
+        elif args.restore_colors:
+            restore_colors()
+        elif args.restore:
             restore()
         else:
             install()
