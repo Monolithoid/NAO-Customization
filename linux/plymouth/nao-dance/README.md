@@ -2,8 +2,7 @@
 
 A compact arm-wave cycle extracted from the user-provided `nao-dance.mp4`,
 with the background removed frame by frame. The `nao-dance` Plymouth theme
-plays this sequence on a dark blue background. The existing `nao-bounce`
-prototype is unchanged.
+plays this sequence on a dark blue background.
 
 Plymouth displays the frames at twice their source size (600 × 720), centered
 on screen. Scaling happens once during preloading; the source assets and
@@ -64,14 +63,14 @@ ffmpeg -framerate 30 -i assets/frames/frame-%02d.png \
 
 ## Install the theme
 
-On Linux, clone the repository and check out the branch containing this theme:
+On Linux, clone the repository:
 
 ```sh
-git clone --branch feat/customization-project-structure https://github.com/Monolithoid/NAO-Customization.git
+git clone https://github.com/Monolithoid/NAO-Customization.git
 cd NAO-Customization/linux/plymouth/nao-dance
 ```
 
-For an existing checkout, switch to that branch and pull instead of cloning again.
+For an existing checkout, update `main` instead of cloning again.
 Install Plymouth and its script plugin using your distribution's packages. On
 Debian/Ubuntu, these are `plymouth` and `plymouth-themes`:
 

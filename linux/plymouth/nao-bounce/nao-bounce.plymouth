@@ -1,8 +1,0 @@
-[Plymouth Theme]
-Name=NAO Bounce
-Description=Bouncing NAO mascot (prototype)
-ModuleName=script
-
-[script]
-ImageDir=/usr/share/plymouth/themes/nao-bounce
-ScriptFile=/usr/share/plymouth/themes/nao-bounce/nao-bounce.script

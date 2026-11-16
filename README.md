@@ -10,31 +10,27 @@ live in its own directory.
 linux/
   gdm/
     nao-background/ # Native Ubuntu background and optional colors
-    nao/            # Full login theme (installation suspended)
   plymouth/
-    nao-bounce/    # Prototype: NAO bounces during boot
-    nao-dance/     # Transparent arm-wave animation and preview
-windows/          # Future Windows customizations
-shared/           # Resources shared across systems
+    nao-dance/      # Transparent NAO boot animation
+windows/            # Future Windows customizations
+shared/             # Resources shared across systems
 ```
 
-## First project
+## Boot animation
 
-[NAO Bounce](linux/plymouth/nao-bounce/README.md) is a starter Plymouth theme.
-It uses a placeholder robot mascot that can be replaced with the actual NAO artwork.
-
-A [short dance reference](linux/plymouth/nao-dance/README.md) is also available,
-with a transparent arm-wave image sequence and looping previews.
+[NAO Dance](linux/plymouth/nao-dance/README.md) is a Plymouth theme using a short,
+transparent arm-wave loop. It includes installation and restoration instructions,
+source footage, exported frames, and looping previews.
 
 ## Login screen
 
-[NAO background](linux/gdm/nao-background/README.md) changes only the wallpaper
-using Ubuntu's native login-screen settings, with an optional dark preference
-and blue accent.
+[NAO background](linux/gdm/nao-background/README.md) customizes Ubuntu's login
+screen with native background settings and optional dark preference and blue
+accent. Background and colors can be restored independently.
 
-[NAO GDM](linux/gdm/nao/README.md) contains the earlier full login-screen design.
-Installation is suspended following a reported GDM regression; use its recovery
-instructions to restore an existing installation.
+The abandoned full GDM theme and initial placeholder Plymouth prototype have
+been removed. Recovery instructions for legacy GDM installations are available
+in the [login-screen README](linux/gdm/nao-background/README.md#legacy-gdm-recovery).
 
 ## Adding a customization
 

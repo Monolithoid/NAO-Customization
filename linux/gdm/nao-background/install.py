@@ -52,7 +52,7 @@ def settings():
 
 def check():
     if OLD_STATE.exists():
-        raise ValueError('Restore the suspended full theme first: linux/gdm/nao/install.py --restore')
+        raise ValueError('Restore the suspended full theme first; see README.md: Legacy GDM recovery')
     profile = next((p for p in PROFILE_PATHS if p.exists()), None)
     if profile is None or 'file-db:/var/lib/gdm3/greeter-dconf-defaults' not in profile.read_text().splitlines():
         raise ValueError('Unexpected active GDM profile; no changes made. Keep the original profile intact.')
