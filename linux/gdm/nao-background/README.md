@@ -6,8 +6,8 @@ form, account visibility, logo, session selection and theme retain their setting
 when installing the background. An optional, independent color override is available below.
 
 This uses Ubuntu's native `com.ubuntu.login-screen` background keys. It does not
-rebuild GResource bundles or create or edit a GDM dconf profile. The earlier full
-GDM theme installer in `../nao` remains suspended.
+rebuild GResource bundles or create or edit a GDM dconf profile. The abandoned full GDM theme has been removed. See
+[legacy recovery](#legacy-gdm-recovery) if its backup remains on your machine.
 
 ## Install
 
@@ -80,6 +80,27 @@ Only this installer's wallpaper and background override are removed. The normal
 GDM configuration generator is rerun. Later modifications to those files are
 protected: the script stops and retains its recovery record rather than deleting
 them. Recovery records live in `/var/lib/nao-gdm-background`.
+
+## Legacy GDM recovery
+
+The abandoned full-theme installer has been removed from the current tree.
+The native installer still refuses to proceed if `/var/lib/nao-gdm` exists, so
+an older experimental installation cannot be silently layered with this one.
+If you already restored that installation, no additional action is needed.
+
+If its backup still exists, retrieve the recovery-capable script from the pinned
+historical commit, from the repository root:
+
+```sh
+git show ebd8a4c:linux/gdm/nao/install.py > /tmp/nao-legacy-restore.py
+sudo python3 /tmp/nao-legacy-restore.py --restore
+```
+
+This script's installation mode is disabled. Run it only with `--restore` to
+recover the saved theme and profile. If the commit is missing in a shallow clone,
+fetch the full history first. Keep `/var/lib/nao-gdm` until restoration succeeds;
+it contains the original configuration. If intervening file changes prevent
+restoration, preserve the error and backup rather than deleting them.
 
 ## Mechanism
 
