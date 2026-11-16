@@ -1,8 +1,9 @@
-# NAO GDM background — native Ubuntu settings
+# NAO GDM background and colors — native Ubuntu settings
 
 Change only the login-screen background on Ubuntu 26.04. The wallpaper has a
 static NAO on the right over the Plymouth dark blue palette. The existing login
-form, account visibility, logo, session selection and theme retain their settings.
+form, account visibility, logo, session selection and theme retain their settings
+when installing the background. An optional, independent color override is available below.
 
 This uses Ubuntu's native `com.ubuntu.login-screen` background keys. It does not
 rebuild GResource bundles or create or edit a GDM dconf profile. The earlier full
@@ -25,6 +26,47 @@ if the expected Ubuntu configuration is absent, it stops without changing it.
 
 Save your work and log out to inspect the login screen, or reboot. Locking the
 desktop is not the same test. The installer does not restart GDM.
+
+## Optional dark preference and blue accent
+
+If the background is already installed, update the checkout from its root and
+apply only the color settings:
+
+```sh
+git pull --ff-only
+cd linux/gdm/nao-background
+sudo python3 install.py --colors
+```
+
+This adds `/usr/share/gdm/dconf/99-nao-colors` containing only:
+
+```ini
+[org/gnome/desktop/interface]
+color-scheme='prefer-dark'
+accent-color='blue'
+```
+
+It uses the same Ubuntu GDM configuration generator as the working background
+installation. Existing background files and recovery records are preserved.
+There are no CSS/resource changes, profile edits, account filtering changes, or
+logo changes. Save your work and log out to inspect the result. GDM is not restarted.
+
+These are native theme preferences, not exact RGB replacements. The selected
+GDM/Yaru theme decides which controls use the blue accent and whether the dark
+preference affects its rendering; it may already use a fixed dark variant.
+An exact cyan accent or arbitrary widget colors would require custom theming,
+which this installer does not attempt. Administrator locks and existing greeter
+user values can override the defaults.
+
+To remove just the colors and keep the NAO background:
+
+```sh
+sudo python3 install.py --restore-colors
+```
+
+This removes only the color override and regenerates the previous defaults.
+Background and colors have separate recovery records, and can be restored in
+either order. Color recovery state is stored in `/var/lib/nao-gdm-colors`.
 
 ## Restore the previous background
 
@@ -67,16 +109,21 @@ precedence over these defaults; report that situation instead of forcing changes
 
 ## Evidence and limits
 
+The native accent and dark preference are validated against the installed
+`org.gnome.desktop.interface` schema before any color files are written. The
+Ubuntu GDM package documents `accent-color` in its greeter configuration template.
+
 The mechanism was checked against the official Ubuntu packages:
 
 - [gnome-shell-common 50.1-0ubuntu1.5](https://archive.ubuntu.com/ubuntu/pool/main/g/gnome-shell/gnome-shell-common_50.1-0ubuntu1.5_all.deb): native schema and supported background values.
 - [GNOME Shell Ubuntu patches](https://archive.ubuntu.com/ubuntu/pool/main/g/gnome-shell/gnome-shell_50.1-0ubuntu1.5.debian.tar.xz): native background settings applied by ScreenShield.
 - [gdm3 50.1-0ubuntu0.1](https://archive.ubuntu.com/ubuntu/pool/main/g/gdm3/gdm3_50.1-0ubuntu0.1_amd64.deb): vendor profile, default settings and configuration generator.
 
-Five tests compile and read real dconf databases in temporary directories. They
-verify that background values change, the login-session defaults and vendor
-profile remain intact, restoration returns the original defaults, errors roll
-back the added files, and custom profiles/later changes are protected.
+Ten tests compile and read real dconf databases in temporary directories. They
+verify background and color values, preservation of login-session defaults and
+the vendor profile, independent background/color restoration, restoration of
+previous administrator color defaults, rollback on failure, rejection of
+unsupported accents, and protection of custom profiles and later changes.
 
 ```sh
 python3 -m unittest discover -s tests -v
@@ -84,7 +131,8 @@ python3 -m unittest discover -s tests -v
 
 These tests do not launch GDM. The cloud host is Debian and cannot validate the
 rendered Ubuntu login screen or authentication. The SVG was rendered and visually
-inspected separately. On-machine visual validation is still required.
+inspected separately. The user confirmed the background works on their Ubuntu machine. The color
+preferences still require on-machine visual validation.
 
 ## Artwork
 
