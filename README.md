@@ -10,7 +10,7 @@ live in its own directory.
 linux/
   plymouth/
     nao-bounce/    # Prototype: NAO bounces during boot
-    nao-dance/     # Short arm-wave clip and looping preview
+    nao-dance/     # Transparent arm-wave animation and preview
 windows/          # Future Windows customizations
 shared/           # Resources shared across systems
 ```
@@ -21,7 +21,7 @@ shared/           # Resources shared across systems
 It uses a placeholder robot mascot that can be replaced with the actual NAO artwork.
 
 A [short dance reference](linux/plymouth/nao-dance/README.md) is also available,
-with an extracted arm-wave cycle and a looping preview.
+with a transparent arm-wave image sequence and looping previews.
 
 ## Adding a customization
 
