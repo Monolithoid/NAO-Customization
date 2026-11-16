@@ -15,7 +15,7 @@ THEME = Path('/usr/share/gnome-shell/gdm-theme.gresource')
 PROFILE = Path('/etc/dconf/profile/gdm')
 SETTINGS = Path('/etc/dconf/db/gdm.d/99-nao-login')
 STATE = Path('/var/lib/nao-gdm')
-CONFIG = b"[org/gnome/login-screen]\nlogo=''\ndisable-user-list=false\n"
+CONFIG = b"[org/gnome/login-screen]\nlogo=''\n"
 
 
 def run(*args):
@@ -184,12 +184,17 @@ def install(width, height, scale):
 def restore():
     backup = STATE / 'backup.json'
     records = json.loads(backup.read_text())
-    # Check all entries before restoring any; do not clobber later user changes.
+    # A previous restore may have replaced the files but failed during dconf
+    # update. Accept original entries on retry, while protecting later changes.
+    pending = []
     for record in records:
         path = Path(record['path'])
+        if snapshot(path) == record['before']:
+            continue
         if path.is_symlink() or not path.is_file() or digest(path.read_bytes()) != record['installed_sha256']:
             raise ValueError(f'{path} changed since installation. Backup kept at {backup}; restore manually.')
-    for record in reversed(records):
+        pending.append(record)
+    for record in reversed(pending):
         recover(Path(record['path']), record['before'])
     run('dconf', 'update')
     shutil.rmtree(STATE)
@@ -207,6 +212,11 @@ def main():
     parser.add_argument('--source', type=Path, default=THEME, help='Resource for build-only mode')
     args = parser.parse_args()
     try:
+        if not args.restore and not args.output:
+            raise ValueError(
+                'Installation suspended after a reported GDM login regression. '
+                'Use --restore to return to the saved configuration. '
+                'Build-only mode (--output) remains available for diagnosis.')
         required = (['dconf'] if args.restore else
                     ['gresource', 'glib-compile-resources'] if args.output else
                     ['gresource', 'glib-compile-resources', 'dconf', 'gnome-shell'])

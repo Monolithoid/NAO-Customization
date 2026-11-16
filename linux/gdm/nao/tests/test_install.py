@@ -130,6 +130,38 @@ class ThemeTests(unittest.TestCase):
         self.assertFalse(self.settings.exists())
         self.assertFalse(self.state.exists())
 
+    def test_restore_retries_after_failed_database_update(self):
+        nao.install(1920, 1080, 1)
+        saved_run = nao.run
+        calls = 0
+        def fail_once(*args):
+            nonlocal calls
+            if args[0] == 'dconf':
+                calls += 1
+                if calls == 1:
+                    raise subprocess.CalledProcessError(1, args)
+            return saved_run(*args)
+        with patch.object(nao, 'run', side_effect=fail_once):
+            with self.assertRaises(subprocess.CalledProcessError):
+                nao.restore()
+            self.assertTrue(self.state.exists())
+            self.assertTrue(self.theme.is_symlink())
+            nao.restore()
+        self.assertFalse(self.state.exists())
+        self.assertEqual(self.theme.readlink(), Path('vendor.gresource'))
+        self.assertFalse(self.profile.exists())
+        self.assertFalse(self.settings.exists())
+
+    def test_cli_installation_is_suspended(self):
+        result = subprocess.run(['python3', str(nao.HERE / 'install.py')],
+                                capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Installation suspended', result.stderr)
+        self.assertFalse(self.state.exists())
+
+    def test_user_list_policy_is_not_overridden(self):
+        self.assertNotIn(b'disable-user-list', nao.CONFIG)
+
     def test_unknown_resource_and_small_screen_are_rejected(self):
         source = self.root / 'unknown.gresource'
         self.make_resource(source, {'not-a-theme.css': b'body {}'})
